@@ -1,0 +1,67 @@
+EmployeeID
+
+EmployeeName
+
+EmployeeAddress
+
+DOB
+
+DOJ
+
+Salary
+
+Answer: 
+create table Employee (
+EmployeeID number,
+EmployeeName varchar(10),
+EmployeeAddress varchar(20),
+DOB date,
+DOJ date,
+Salary number);				
+			 
+a.) Insert five records
+Answer:
+insert into Employee values(1,'Sid','Mumbai','06-AUG-1996','24-SEP-2018',22000);
+insert into Employee values(2,'Nick','Mumbai','15-MAR-1997','24-SEP-2018',22500);
+insert into Employee values(3,'Subrat','Bangalore','26-JUL-1997','24-SEP-2018',23000);
+insert into Employee values(4,'Rajesh','Bhubaneswar','16-SEP-1997','24-SEP-2018',23000);
+insert into Employee values(5,'Rohan','Bangalore','29-JUN-1997','24-SEP-2018',22000);
+
+
+
+b) Retrieve all the records
+
+Answer:
+select * from Employee;
+
+
+
+c) Retrieve the Employee name whose salary is greater than 20000
+Answer :
+select * from Employee where Salary>20000;
+
+
+d) Retrieve the Employee name whose address contains 'a' or 'p' or 'r'  as the last character
+
+
+Answer:
+select * from Employee where EmployeeAddress  like ('%a') or  EmployeeAddress like ('%p') or EmployeeAddress like('%r');
+
+e) Increase the Salary of all the Employee by 20%
+Answer:
+update Employee set salary=salary+salary*.2;
+
+
+f) Delete all the employee records whose salary is less than 5000
+Answer:
+delete from employee where salary<5000;
+
+
+g) Add another column Email and update the contents.
+Answer:
+alter table Employee add Email varchar2(20);
+update Employee set email='smis@gmail.com' where EmployeeId=1;
+update Employee set email='abc@gmail.com' where EmployeeId=2;
+update Employee set email='xyz@gmail.com' where EmployeeId=3;
+update Employee set email='qrs@gmail.com' where EmployeeId=4;
+update Employee set email='tuv@gmail.com' where EmployeeId=5;
