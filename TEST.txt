@@ -1,0 +1,609 @@
+1.*Write a query which will display the customer id, account type they hold, their account number and bank name.
+
+SELECT S.CUSTOMER_ID,S.ACCOUNT_TYPE,S.ACCOUNT_NO,B.BANK_NAME FROM BANK_INFO B INNER JOIN ACCOUNT_INFO S ON B.IFSC_CODE=S.IFSC_CODE;
+
+CUSTO ACCOUNT_TY ACCOUNT_NO BANK_NAME
+----- ---------- ---------- -------------------------
+C-001 SAVINGS    1.2346E+15 HDFC
+C-002 SALARY     1.2346E+15 SBI
+C-003 SAVINGS    1.2346E+15 ICICI
+C-004 SALARY     1.2346E+15 HDFC
+C-005 SAVINGS    1.2346E+15 SBI
+
+
+2.*Write a query which will display the customer id, account type and the account number of HDFC customers who registered after 12-JAN-2012 and before 04-APR-2012.
+
+ SELECT AI.CUSTOMER_ID, AI.ACCOUNT_TYPE, AI.ACCOUNT_NO
+  2  FROM ACCOUNT_INFO AI
+  3  INNER JOIN BANK_INFO BI
+  4  ON AI.IFSC_CODE=BI.IFSC_CODE
+  5  WHERE AI.REGISTRATION_DATE BETWEEN '12-JAN-2012' AND '04-APR-2012' AND BI.BANK_NAME='HDFC';
+
+CUSTO ACCOUNT_TY ACCOUNT_NO
+----- ---------- ----------
+C-001 SAVINGS    1.2346E+15
+
+3.*Write a query which will display the customer id, customer name, account no, account type and bank name where the customers hold the account.
+
+4.*Write a query which will display the customer id, customer name, gender, marital status along with the unique reference string and
+ sort the records based on customer id in descending order. <br/>
+<br/><b>Hint:  </b>Generate unique reference string as mentioned below
+:
+<br/> CustomerName_Gender_MaritalStatus
+<br/><b> Example, </b>
+<br/> C-005           KUMAR              M                 SINGLE            KUMAR_M_SINGLE
+<BR/> 
+Use ""UNIQUE_REF_STRING"" as alias name for displaying the unique reference string."
+
+SELECT CUSTOMER_ID, CUSTOMER_NAME, GENDER, MARITAL_STATUS, CUSTOMER_NAME||'_'||GENDER||'_'||MARITAL_STATUS AS UNIQUE_REF_STRING  FROM CUSTOMER_PERSONAL_INFO ORDER BY CUSTOMER_NAME DESC;
+
+CUSTO CUSTOMER_NAME                  G MARITAL_ST
+----- ------------------------------ - ----------
+UNIQUE_REF_STRING
+-------------------------------------------
+C-003 SUNITHA                        F SINGLE
+SUNITHA_F_SINGLE
+
+C-004 RAMESH                         M MARRIED
+RAMESH_M_MARRIED
+
+C-005 KUMAR                          M SINGLE
+KUMAR_M_SINGLE
+
+
+CUSTO CUSTOMER_NAME                  G MARITAL_ST
+----- ------------------------------ - ----------
+UNIQUE_REF_STRING
+-------------------------------------------
+C-001 JOHN                           M SINGLE
+JOHN_M_SINGLE
+
+C-002 JAMES                          M MARRIED
+
+5.*Write a query which will display the account number, customer id, registration date, initial deposit amount of the customer
+ whose initial deposit amount is within the range of Rs.15000 to Rs.25000.
+
+SELECT ACCOUNT_NO, CUSTOMER_ID, REGISTRATION_DATE, INITIAL_DEPOSIT
+  2  FROM ACCOUNT_INFO
+  3  WHERE INITIAL_DEPOSIT BETWEEN 15000 AND 25000;
+
+ACCOUNT_NO CUSTO REGISTRAT INITIAL_DEPOSIT
+---------- ----- --------- ---------------
+1.2346E+15 C-003 15-MAR-12           16000
+1.2346E+15 C-005 12-APR-12           20000
+
+6.*Write a query which will display customer id, customer name, date of birth, guardian name of the customers whose name starts with 'J'.
+ 
+SELECT CUSTOMER_ID, CUSTOMER_NAME, DATE_OF_BIRTH, GUARDIAN_NAME
+  2  FROM CUSTOMER_PERSONAL_INFO
+  3  WHERE CUSTOMER_NAME LIKE 'J%';
+
+CUSTO CUSTOMER_NAME                  DATE_OF_B GUARDIAN_NAME
+----- ------------------------------ --------- ------------------------------
+C-001 JOHN                           03-MAY-84 PETER
+C-002 JAMES                          06-AUG-84 GEORGE
+
+
+7.*Write a query which will display customer id, account number and passcode. 
+<br/>
+Hint:  To generate passcode, join the last three digits of customer id and last four digit of account number.
+ 
+<br/>Example
+<br/>C-001                   1234567898765432                0015432
+<br/>Use ""PASSCODE"" as alias name for displaying the passcode."
+
+SELECT CUSTOMER_ID, ACCOUNT_NO, CONCAT(SUBSTR(CUSTOMER_ID,-3),SUBSTR(ACCOUNT_NO,-4))AS PASSCODE
+  2  FROM ACCOUNT_INFO;
+
+CUSTO ACCOUNT_NO PASSCOD
+----- ---------- -------
+C-001 1.2346E+15 0015432
+C-002 1.2346E+15 0025433
+C-003 1.2346E+15 0035434
+C-004 1.2346E+15 0045435
+C-005 1.2346E+15 0055436
+
+
+8.*Write a query which will display the customer id, customer name, date of birth, Marital Status, Gender, Guardian name, 
+contact no and email id of the customers whose gender is male 'M' and marital status is MARRIED.
+
+ SELECT CUSTOMER_ID, CUSTOMER_NAME, DATE_OF_BIRTH, MARITAL_STATUS, GENDER, GUARDIAN_NAME, CONTACT_NO, MAIL_ID
+  2  FROM CUSTOMER_PERSONAL_INFO
+  3  WHERE GENDER='M' AND MARITAL_STATUS='MARRIED';
+
+CUSTO CUSTOMER_NAME                  DATE_OF_B MARITAL_ST G
+----- ------------------------------ --------- ---------- -
+GUARDIAN_NAME                  CONTACT_NO MAIL_ID
+------------------------------ ---------- ------------------------------
+C-002 JAMES                          06-AUG-84 MARRIED    M
+GEORGE                         9237893481 JAMES_123@gmail.com
+
+C-004 RAMESH                         11-DEC-85 MARRIED    M
+KRISHNAN                       9235234534 RAMESH_123@gmail.com
+
+9.*Write a query which will display the customer id, customer name, guardian name, reference account holders name of the customers 
+who are referenced / referred by their 'FRIEND'.
+ SELECT C.CUSTOMER_ID, C.CUSTOMER_NAME, C.GUARDIAN_NAME, R.REFERENCE_ACC_NAME AS FRIEND
+  2  FROM CUSTOMER_PERSONAL_INFO C
+  3  INNER JOIN CUSTOMER_REFERENCE_INFO R
+  4  ON C.CUSTOMER_ID=R.CUSTOMER_ID;
+
+CUSTO CUSTOMER_NAME                  GUARDIAN_NAME
+----- ------------------------------ ------------------------------
+FRIEND
+--------------------
+C-001 JOHN                           PETER
+RAM
+
+C-002 JAMES                          GEORGE
+RAGHUL
+
+C-003 SUNITHA                        VINOD
+GOKUL
+
+
+CUSTO CUSTOMER_NAME                  GUARDIAN_NAME
+----- ------------------------------ ------------------------------
+FRIEND
+--------------------
+C-004 RAMESH                         KRISHNAN
+RAHMAN
+
+C-005 KUMAR                          KIRAN
+
+10.*Write a query to display the customer id, account number and interest amount in the below format with INTEREST_AMT as alias name
+ Sort the result based on the INTEREST_AMT in ascending order.  <BR/>Example: 
+$5<BR/>Hint: Need to prefix $ to interest amount and round the result without decimals.
+
+SELECT CUSTOMER_ID, ACCOUNT_NO, CONCAT('$',ROUND((INTEREST/100)*INITIAL_DEPOSIT,0)) AS INTEREST_AMT
+    FROM ACCOUNT_INFO ORDER BY INTEREST_AMT;
+
+CUSTO ACCOUNT_NO INTEREST_AMT
+----- ---------- -----------------------------------------
+C-003 1.2346E+15 $4
+C-001 1.2346E+15 $5
+C-002 1.2346E+15 $6
+C-004 1.2346E+15 $7
+C-005 1.2346E+15 $8
+ 
+11.*Write a query which will display the customer id, customer name, account no, account type, activation date,
+ bank name whose account will be activated on '10-APR-2012'
+
+ SELECT C.CUSTOMER_ID, C.CUSTOMER_NAME, A.ACCOUNT_NO, A.ACCOUNT_TYPE, A.ACTIVATION_DATE, B.BANK_NAME
+  2  FROM CUSTOMER_PERSONAL_INFO C
+  3  INNER JOIN ACCOUNT_INFO A
+  4  ON C.CUSTOMER_ID=A.CUSTOMER_ID
+  5  INNER JOIN BANK_INFO B
+  6  ON B.IFSC_CODE=A.IFSC_CODE
+  7  WHERE A.ACTIVATION_DATE='10-APR-2012';
+
+CUSTO CUSTOMER_NAME                  ACCOUNT_NO ACCOUNT_TY ACTIVATIO
+----- ------------------------------ ---------- ---------- ---------
+BANK_NAME
+-------------------------
+C-004 RAMESH                         1.2346E+15 SALARY     10-APR-12
+HDFC
+
+12.*Write a query which will display account number, customer id, customer name, bank name, branch name, ifsc code
+, citizenship, interest and initial deposit amount of all the customers.
+
+
+SELECT A.ACCOUNT_NO, C.CUSTOMER_ID, C.CUSTOMER_NAME, B.BANK_NAME, B.BRANCH_NAME, B.IFSC_CODE, C.CITIZENSHIP, A.INTEREST, A.INITIAL_DEPOSIT
+  2  FROM CUSTOMER_PERSONAL_INFO C
+  3  INNER JOIN ACCOUNT_INFO A
+  4  ON C.CUSTOMER_ID=A.CUSTOMER_ID
+  5  INNER JOIN BANK_INFO B
+  6  ON B.IFSC_CODE=A.IFSC_CODE;
+
+ACCOUNT_NO CUSTO CUSTOMER_NAME                  BANK_NAME
+---------- ----- ------------------------------ -------------------------
+BRANCH_NAME               IFSC_CODE       CITIZENSHIP            INTEREST
+------------------------- --------------- -------------------- ----------
+INITIAL_DEPOSIT
+---------------
+1.2346E+15 C-004 RAMESH                         HDFC
+VALASARAVAKKAM            HDVL0012        INDIAN                        7
+              0
+
+1.2346E+15 C-001 JOHN                           HDFC
+VALASARAVAKKAM            HDVL0012        INDIAN                        5
+          10000
+
+ACCOUNT_NO CUSTO CUSTOMER_NAME                  BANK_NAME
+---------- ----- ------------------------------ -------------------------
+BRANCH_NAME               IFSC_CODE       CITIZENSHIP            INTEREST
+------------------------- --------------- -------------------- ----------
+INITIAL_DEPOSIT
+---------------
+
+1.2346E+15 C-002 JAMES                          SBI
+TNAGAR                    SBITN0123       INDIAN                        6
+              0
+
+1.2346E+15 C-003 SUNITHA                        ICICI
+TNAGAR                    ICITN0232       INDIAN                        4
+
+ACCOUNT_NO CUSTO CUSTOMER_NAME                  BANK_NAME
+---------- ----- ------------------------------ -------------------------
+BRANCH_NAME               IFSC_CODE       CITIZENSHIP            INTEREST
+------------------------- --------------- -------------------- ----------
+INITIAL_DEPOSIT
+---------------
+          16000
+
+1.2346E+15 C-005 KUMAR                          SBI
+SAIDAPET                  SBISD0113       INDIAN                        8
+
+13.*Write a query which will display customer id, customer name, date of birth, guardian name, contact number,
+ mail id and reference account holder's name of the customers who has submitted the passport as an identification document.
+
+ SELECT C.CUSTOMER_ID,C.CUSTOMER_NAME,C.DATE_OF_BIRTH,C.GUARDIAN_NAME,C.MAIL_ID,R.REFERENCE_ACC_NAME FROM CUSTOMER_PERSONAL_INFO C INNER JOIN CUSTOMER_REFERENCE_INFO R ON C.CUSTOMER_ID=R.CUSTOMER_ID WHERE C.IDENTIFICATION_DOC_TYPE='PASSPORT';
+
+CUSTO CUSTOMER_NAME                  DATE_OF_B GUARDIAN_NAME
+----- ------------------------------ --------- ------------------------------
+MAIL_ID                        REFERENCE_ACC_NAME
+------------------------------ --------------------
+C-001 JOHN                           03-MAY-84 PETER
+JOHN_123@gmail.com             RAM
+
+C-002 JAMES                          06-AUG-84 GEORGE
+JAMES_123@gmail.com            RAGHUL
+
+C-004 RAMESH                         11-DEC-85 KRISHNAN
+RAMESH_123@gmail.com           RAHMAN
+
+
+CUSTO CUSTOMER_NAME                  DATE_OF_B GUARDIAN_NAME
+----- ------------------------------ --------- ------------------------------
+MAIL_ID                        REFERENCE_ACC_NAME
+------------------------------ --------------------
+C-005 KUMAR                          26-APR-83 KIRAN
+KUMAR_123@gmail.com            VIVEK
+
+14.*Write a query to display the customer id, customer name, account number, account type, initial deposit, 
+interest who have deposited maximum amount in the bank.
+
+ SELECT A.CUSTOMER_ID,A.ACCOUNT_NO,C.CUSTOMER_NAME,A.ACCOUNT_TYPE,A.INITIAL_DEPOSIT,A.INTEREST FROM ACCOUNT_INFO A INNER JOIN CUSTOMER_PERSONAL_INFO C ON C.CUSTOMER_ID=A.CUSTOMER_ID WHERE INITIAL_DEPOSIT=(SELECT MAX(INITIAL_DEPOSIT) FROM ACCOUNT_INFO);
+
+CUSTO ACCOUNT_NO CUSTOMER_NAME                  ACCOUNT_TY INITIAL_DEPOSIT
+----- ---------- ------------------------------ ---------- ---------------
+  INTEREST
+----------
+C-005 1.2346E+15 KUMAR                          SAVINGS              20000
+         8
+
+15.*Write a query to display the customer id, customer name, account number, account type, interest, bank name 
+and initial deposit amount of the customers who are getting maximum interest rate.
+
+ SELECT C.CUSTOMER_ID,CUSTOMER_NAME,ACCOUNT_NO,ACCOUNT_TYPE,INTEREST,INITIAL_DEPOSIT,BANK_NAME FROM CUSTOMER_PERSONAL_INFO C INNER JOIN ACCOUNT_INFO A ON A.CUSTOMER_ID = C.CUSTOMER_ID INNER JOIN BANK_INFO B ON B.IFSC_CODE = A.IFSC_CODE WHERE INTEREST = (SELECT MAX(INTEREST) FROM ACCOUNT_INFO);
+
+CUSTO CUSTOMER_NAME                  ACCOUNT_NO ACCOUNT_TY   INTEREST
+----- ------------------------------ ---------- ---------- ----------
+INITIAL_DEPOSIT BANK_NAME
+--------------- -------------------------
+C-005 KUMAR                          1.2346E+15 SAVINGS             8
+          20000 SBI
+
+16.Write a query to display the customer id, customer name, account no, bank name, contact no 
+and mail id of the customers who are from BANGALORE.
+
+SELECT C.CUSTOMER_ID, C.CUSTOMER_NAME, A.ACCOUNT_NO, B.BANK_NAME, B.BRANCH_NAME, C.CONTACT_NO, C.MAIL_ID
+  2  FROM CUSTOMER_PERSONAL_INFO C
+  3  INNER JOIN ACCOUNT_INFO AI
+  4  ON C.CUSTOMER_ID=AI.CUSTOMER_ID
+  5  INNER JOIN BANK_INFO B
+  6  ON B.IFSC_CODE=A.IFSC_CODE
+  7  WHERE C.ADDRESS LIKE '%BANGALORE';
+
+CUSTO CUSTOMER_NAME                  ACCOUNT_NO BANK_NAME
+----- ------------------------------ ---------- -------------------------
+BRANCH_NAME               CONTACT_NO MAIL_ID
+------------------------- ---------- ------------------------------
+C-001 JOHN                           1.2346E+15 HDFC
+VALASARAVAKKAM            9734526719 JOHN_123@gmail.com
+
+C-002 JAMES                          1.2346E+15 SBI
+TNAGAR                    9237893481 JAMES_123@gmail.com
+
+C-005 KUMAR                          1.2346E+15 SBI
+SAIDAPET                  9242342312 KUMAR_123@gmail.com
+
+17.Write a query which will display customer id, bank name, branch name, ifsc code, registration date, 
+activation date of the customers whose activation date is in the month of march (March 1'st to March 31'st).
+
+SELECT CPI.CUSTOMER_ID, BI.BANK_NAME, BI.BRANCH_NAME, BI.IFSC_CODE, AI.REGISTRATION_DATE, AI.ACTIVATION_DATE
+    FROM CUSTOMER_PERSONAL_INFO CPI
+    INNER JOIN ACCOUNT_INFO AI
+    ON CPI.CUSTOMER_ID=AI.CUSTOMER_ID
+   INNER JOIN BANK_INFO BI
+    ON BI.IFSC_CODE=AI.IFSC_CODE
+    WHERE TO_CHAR(ACTIVATION_DATE,'MON')='MAR';
+
+CUSTO BANK_NAME                 BRANCH_NAME               IFSC_CODE
+----- ------------------------- ------------------------- ---------------
+REGISTRAT ACTIVATIO
+--------- ---------
+C-002 SBI                       TNAGAR                    SBITN0123
+12-MAR-12 17-MAR-12
+
+C-003 ICICI                     TNAGAR                    ICITN0232
+15-MAR-12 20-MAR-12
+
+
+18.Write a query which will calculate the interest amount and display it along with customer id, customer name, 
+account number, account type, interest, and initial deposit amount.<BR>Hint :Formula for interest amount, 
+calculate: ((interest/100) * initial deposit amt) with column name 'interest_amt' (alias)
+
+SELECT ((INTEREST/100)*INITIAL_DEPOSIT) AS INTEREST_AMT, C.CUSTOMER_ID, C.CUSTOMER_NAME, A.ACCOUNT_NO, A.ACCOUNT_TYPE, A.INTEREST, A.INITIAL_DEPOSIT
+FROM CUSTOMER_PERSONAL_INFO C
+INNER JOIN ACCOUNT_INFO A
+ON C.CUSTOMER_ID=A.CUSTOMER_ID;
+
+INTEREST_AMT CUSTO CUSTOMER_NAME                  ACCOUNT_NO ACCOUNT_TY
+------------ ----- ------------------------------ ---------- ----------
+  INTEREST INITIAL_DEPOSIT
+---------- ---------------
+         500 C-001 JOHN                           1.2346E+15 SAVINGS
+         5           10000
+
+           0 C-002 JAMES                          1.2346E+15 SALARY
+         6               0
+
+         640 C-003 SUNITHA                        1.2346E+15 SAVINGS
+         4           16000
+
+
+INTEREST_AMT CUSTO CUSTOMER_NAME                  ACCOUNT_NO ACCOUNT_TY
+------------ ----- ------------------------------ ---------- ----------
+  INTEREST INITIAL_DEPOSIT
+---------- ---------------
+           0 C-004 RAMESH                         1.2346E+15 SALARY
+         7               0
+
+        1600 C-005 KUMAR                          1.2346E+15 SAVINGS
+         8           20000
+
+19.Write a query to display the customer id, customer name, date of birth, guardian name, contact number, 
+mail id, reference name who has been referenced by 'RAGHUL'.
+
+SELECT C.CUSTOMER_ID, C.CUSTOMER_NAME, C.DATE_OF_BIRTH, C.GUARDIAN_NAME, C.CONTACT_NO, C.MAIL_ID, R.REFERENCE_ACC_NAME
+FROM CUSTOMER_PERSONAL_INFO C
+INNER JOIN CUSTOMER_REFERENCE_INFO R
+ON C.CUSTOMER_ID=R.CUSTOMER_ID
+WHERE R.REFERENCE_ACC_NAME='RAGHUL';
+
+CUSTO CUSTOMER_NAME                  DATE_OF_B GUARDIAN_NAME
+----- ------------------------------ --------- ------------------------------
+CONTACT_NO MAIL_ID                        REFERENCE_ACC_NAME
+---------- ------------------------------ --------------------
+C-002 JAMES                          06-AUG-84 GEORGE
+9237893481 JAMES_123@gmail.com            RAGHUL
+
+20."Write a query which will display the customer id, customer name and contact number with ISD code of 
+all customers in below mentioned format.  Sort the result based on the customer id in descending order. 
+<BR>Format for contact number is :  
+<br/> ""+91-3digits-3digits-4digits""
+<br/> Example: +91-924-234-2312
+<br/> Use ""CONTACT_ISD"" as alias name."
+
+
+
+SELECT CUSTOMER_ID, CUSTOMER_NAME, '+91-'||SUBSTR(CONTACT_NO,1,3)||'-'||SUBSTR(CONTACT_NO,4,3)||'-'||SUBSTR(CONTACT_NO,-4) AS CONTACT_ISD
+FROM CUSTOMER_PERSONAL_INFO
+ORDER BY CUSTOMER_ID DESC;
+
+CUSTO CUSTOMER_NAME                  CONTACT_ISD
+----- ------------------------------ ----------------
+C-005 KUMAR                          +91-924-234-2312
+C-004 RAMESH                         +91-923-523-4534
+C-003 SUNITHA                        +91-943-897-8389
+C-002 JAMES                          +91-923-789-3481
+C-001 JOHN                           +91-973-452-6719
+
+21.Write a query which will display account number, account type, customer id, customer name, date of birth, guardian name, 
+contact no, mail id , gender, reference account holders name, reference account holders account number, registration date, 
+activation date, number of days between the registration date and activation date with alias name "NoofdaysforActivation", 
+bank name, branch name and initial deposit for all the customers.
+
+
+SELECT A.ACCOUNT_NO, A.ACCOUNT_TYPE, C.CUSTOMER_ID, C.CUSTOMER_NAME, C.DATE_OF_BIRTH, C.GUARDIAN_NAME, C.CONTACT_NO, C.MAIL_ID, C.GENDER,
+R.REFERENCE_ACC_NAME, R.REFERENCE_ACC_NO, A.REGISTRATION_DATE, A.ACTIVATION_DATE, DATEDIFF(ACTIVATION_DATE,REGISTRATION_DATE) AS NoofdaysforActivation,
+BI.BANK_NAME, BI.BRANCH_NAME, AI.INITIAL_DEPOSIT
+FROM CUSTOMER_PERSONAL_INFO CPI
+INNER JOIN ACCOUNT_INFO AI
+ON CPI.CUSTOMER_ID=AI.CUSTOMER_ID
+INNER JOIN BANK_INFO BI
+ON BI.IFSC_CODE=AI.IFSC_CODE
+INNER JOIN CUSTOMER_REFERENCE_INFO CRI
+ON CRI.CUSTOMER_ID=CPI.CUSTOMER_ID;
+
+ACCOUNT_NO ACCOUNT_TY CUSTO CUSTOMER_NAME                  DATE_OF_B
+---------- ---------- ----- ------------------------------ ---------
+GUARDIAN_NAME                  CONTACT_NO MAIL_ID                        G
+------------------------------ ---------- ------------------------------ -
+REFERENCE_ACC_NAME   REFERENCE_ACC_NO REGISTRAT ACTIVATIO NOOFDAYSFORACTIVATION
+-------------------- ---------------- --------- --------- ---------------------
+BANK_NAME                 BRANCH_NAME               INITIAL_DEPOSIT
+------------------------- ------------------------- ---------------
+1.2346E+15 SAVINGS    C-001 JOHN                           03-MAY-84
+PETER                          9734526719 JOHN_123@gmail.com             M
+RAM                        9.8765E+14 23-FEB-12 28-FEB-12                     5
+HDFC                      VALASARAVAKKAM                      10000
+
+
+ACCOUNT_NO ACCOUNT_TY CUSTO CUSTOMER_NAME                  DATE_OF_B
+---------- ---------- ----- ------------------------------ ---------
+GUARDIAN_NAME                  CONTACT_NO MAIL_ID                        G
+------------------------------ ---------- ------------------------------ -
+REFERENCE_ACC_NAME   REFERENCE_ACC_NO REGISTRAT ACTIVATIO NOOFDAYSFORACTIVATION
+-------------------- ---------------- --------- --------- ---------------------
+BANK_NAME                 BRANCH_NAME               INITIAL_DEPOSIT
+------------------------- ------------------------- ---------------
+1.2346E+15 SALARY     C-002 JAMES                          06-AUG-84
+GEORGE                         9237893481 JAMES_123@gmail.com            M
+RAGHUL                     9.8765E+14 12-MAR-12 17-MAR-12                     5
+SBI                       TNAGAR                                  0
+
+
+ACCOUNT_NO ACCOUNT_TY CUSTO CUSTOMER_NAME                  DATE_OF_B
+---------- ---------- ----- ------------------------------ ---------
+GUARDIAN_NAME                  CONTACT_NO MAIL_ID                        G
+------------------------------ ---------- ------------------------------ -
+REFERENCE_ACC_NAME   REFERENCE_ACC_NO REGISTRAT ACTIVATIO NOOFDAYSFORACTIVATION
+-------------------- ---------------- --------- --------- ---------------------
+BANK_NAME                 BRANCH_NAME               INITIAL_DEPOSIT
+------------------------- ------------------------- ---------------
+1.2346E+15 SAVINGS    C-003 SUNITHA                        06-NOV-84
+VINOD                          9438978389 SUNITHA_123@gmail.com          F
+GOKUL                      9.8765E+14 15-MAR-12 20-MAR-12                     5
+ICICI                     TNAGAR                              16000
+
+
+ACCOUNT_NO ACCOUNT_TY CUSTO CUSTOMER_NAME                  DATE_OF_B
+---------- ---------- ----- ------------------------------ ---------
+GUARDIAN_NAME                  CONTACT_NO MAIL_ID                        G
+------------------------------ ---------- ------------------------------ -
+REFERENCE_ACC_NAME   REFERENCE_ACC_NO REGISTRAT ACTIVATIO NOOFDAYSFORACTIVATION
+-------------------- ---------------- --------- --------- ---------------------
+BANK_NAME                 BRANCH_NAME               INITIAL_DEPOSIT
+------------------------- ------------------------- ---------------
+1.2346E+15 SALARY     C-004 RAMESH                         11-DEC-85
+KRISHNAN                       9235234534 RAMESH_123@gmail.com           M
+RAHMAN                     9.8765E+14 05-APR-12 10-APR-12                     5
+HDFC                      VALASARAVAKKAM                          0
+
+
+ACCOUNT_NO ACCOUNT_TY CUSTO CUSTOMER_NAME                  DATE_OF_B
+---------- ---------- ----- ------------------------------ ---------
+GUARDIAN_NAME                  CONTACT_NO MAIL_ID                        G
+------------------------------ ---------- ------------------------------ -
+REFERENCE_ACC_NAME   REFERENCE_ACC_NO REGISTRAT ACTIVATIO NOOFDAYSFORACTIVATION
+-------------------- ---------------- --------- --------- ---------------------
+BANK_NAME                 BRANCH_NAME               INITIAL_DEPOSIT
+------------------------- ------------------------- ---------------
+1.2346E+15 SAVINGS    C-005 KUMAR                          26-APR-83
+KIRAN                          9242342312 KUMAR_123@gmail.com            M
+VIVEK                      9.8765E+14 12-APR-12 17-APR-12                     5
+SBI                       SAIDAPET                            20000
+
+
+22."Write a query which will display customer id, customer name,  guardian name, identification doc type,
+ reference account holders name, account type, ifsc code, bank name and current balance for the customers 
+who has only the savings account. 
+<br/>Hint:  Formula for calculating current balance is add the intital deposit amount and interest
+ and display without any decimals. Use ""CURRENT_BALANCE"" as alias name."
+
+ SELECT C.CUSTOMER_ID, C.CUSTOMER_NAME, C.GUARDIAN_NAME, C.IDENTIFICATION_DOC_TYPE, R.REFERENCE_ACC_NAME,A.ACCOUNT_TYPE, B.IFSC_CODE, B.BANK_NAME, ROUND((INITIAL_DEPOSIT+INTEREST),0) AS CURRENT_BALANCE FROM CUSTOMER_PERSONAL_INFO C INNER JOIN ACCOUNT_INFO A
+    ON C.CUSTOMER_ID=A.CUSTOMER_ID INNER JOIN BANK_INFO B ON B.IFSC_CODE=A.IFSC_CODE INNER JOIN CUSTOMER_REFERENCE_INFO R ON R.CUSTOMER_ID=C.CUSTOMER_ID WHERE ACCOUNT_TYPE='SAVINGS';
+
+CUSTO CUSTOMER_NAME                  GUARDIAN_NAME
+----- ------------------------------ ------------------------------
+IDENTIFICATION_DOC_T REFERENCE_ACC_NAME   ACCOUNT_TY IFSC_CODE
+-------------------- -------------------- ---------- ---------------
+BANK_NAME                 CURRENT_BALANCE
+------------------------- ---------------
+C-001 JOHN                           PETER
+PASSPORT             RAM                  SAVINGS    HDVL0012
+HDFC                                10005
+
+C-003 SUNITHA                        VINOD
+VOTER-ID             GOKUL                SAVINGS    ICITN0232
+ICICI                               16004
+
+CUSTO CUSTOMER_NAME                  GUARDIAN_NAME
+----- ------------------------------ ------------------------------
+IDENTIFICATION_DOC_T REFERENCE_ACC_NAME   ACCOUNT_TY IFSC_CODE
+-------------------- -------------------- ---------- ---------------
+BANK_NAME                 CURRENT_BALANCE
+------------------------- ---------------
+
+C-005 KUMAR                          KIRAN
+PASSPORT             VIVEK                SAVINGS    SBISD0113
+SBI                                 20008
+
+
+23."Write a query which will display the customer id, customer name, account number, account type, interest, initial deposit;
+ <br/>check the initial deposit,<br/> if initial deposit is 20000 then display ""high"",<br/> if initial deposit is 16000 display 'moderate'
+,<br/> if initial deposit is 10000 display 'average', <br/>if initial deposit is 5000 display 'low', <br/>if initial deposit is 0 display
+ 'very low' otherwise display 'invalid' and sort by interest in descending order.<br/>
+Hint: Name the column as ""Deposit_Status"" (alias). 
+<br/>Strictly follow the lower case for strings in this query."
+
+
+    SELECT C.CUSTOMER_ID, C.CUSTOMER_NAME, A.ACCOUNT_NO, A.ACCOUNT_TYPE, A.INTEREST, A.INITIAL_DEPOSIT,
+  2      CASE
+  3      WHEN INITIAL_DEPOSIT=20000 THEN 'high'
+  4      WHEN INITIAL_DEPOSIT=16000 THEN 'moderate'
+  5      WHEN INITIAL_DEPOSIT=10000 THEN 'average'
+  6      WHEN INITIAL_DEPOSIT=5000 THEN 'low'
+  7      WHEN INITIAL_DEPOSIT=0 THEN 'very low'
+  8      ELSE 'invalid' END DEPOSIT_STATUS
+  9      FROM CUSTOMER_PERSONAL_INFO C
+ 10      INNER JOIN ACCOUNT_INFO A
+ 11      ON C.CUSTOMER_ID=A.CUSTOMER_ID
+ 12      ORDER BY INTEREST DESC;
+
+CUSTO CUSTOMER_NAME                  ACCOUNT_NO ACCOUNT_TY   INTEREST
+----- ------------------------------ ---------- ---------- ----------
+INITIAL_DEPOSIT DEPOSIT_
+--------------- --------
+C-005 KUMAR                          1.2346E+15 SAVINGS             8
+          20000 high
+
+C-004 RAMESH                         1.2346E+15 SALARY              7
+              0 very low
+
+C-002 JAMES                          1.2346E+15 SALARY              6
+              0 very low
+
+
+CUSTO CUSTOMER_NAME                  ACCOUNT_NO ACCOUNT_TY   INTEREST
+----- ------------------------------ ---------- ---------- ----------
+INITIAL_DEPOSIT DEPOSIT_
+--------------- --------
+C-001 JOHN                           1.2346E+15 SAVINGS             5
+          10000 average
+
+C-003 SUNITHA                        1.2346E+15 SAVINGS             4
+          16000 moderate
+
+24."Write a query which will display customer id, customer name,  account number, account type, bank name, ifsc code, initial deposit amount
+ and new interest amount for the customers whose name starts with ""J"". 
+<br/> Hint:  Formula for calculating ""new interest amount"" is 
+if customers account type is savings then add 10 % on current interest amount to interest amount else display the current interest amount.
+ Round the new interest amount to 2 decimals.<br/> Use ""NEW_INTEREST"" as alias name for displaying the new interest amount.
+
+<br/>Example, Assume Jack has savings account and his current interest amount is 10.00, then the new interest amount is 11.00 i.e (10 + (10 * 10/100)). 
+"
+
+
+ SELECT C.CUSTOMER_ID,CUSTOMER_NAME,ACCOUNT_NO,ACCOUNT_TYPE,BANK_NAME,B.IFSC_CODE,INITIAL_DEPOSIT,
+  2  ROUND((INTEREST+(10*INTEREST)/100),2) AS NEW_INTEREST FROM CUSTOMER_PERSONAL_INFO C INNER JOIN
+  3   ACCOUNT_INFO A ON A.CUSTOMER_ID = C.CUSTOMER_ID INNER JOIN BANK_INFO B ON
+  4   B.IFSC_CODE = A.IFSC_CODE WHERE CUSTOMER_NAME LIKE 'J%';
+
+CUSTO CUSTOMER_NAME                  ACCOUNT_NO ACCOUNT_TY
+----- ------------------------------ ---------- ----------
+BANK_NAME                 IFSC_CODE       INITIAL_DEPOSIT NEW_INTEREST
+------------------------- --------------- --------------- ------------
+C-001 JOHN                           1.2346E+15 SAVINGS
+HDFC                      HDVL0012                  10000          5.5
+
+C-002 JAMES                          1.2346E+15 SALARY
+SBI                       SBITN0123                     0          6.6
+
+
+25.Write query to display the customer id, customer name, account no, initial deposit, tax percentage as calculated below.
+<BR>Hint: <BR>If initial deposit = 0 then tax is '0%'<BR>If initial deposit &lt;= 10000 then tax is '3%' 
+<BR>If initial deposit &gt; 10000 and initial deposit &lt; 20000 then tax is '5%' <BR>If initial deposit &gt;= 20000 and
+ initial deposit&lt;=30000 then tax is '7%' <BR>If initial deposit &gt; 30000 then tax is '10%' <BR>Use the alias name 'taxPercentage'
+
+ select cpi.customer_id, cpi.customer_name, ai.account_no, ai.initial_deposit, case ai.initial_deposit when 0 then '0%' when 1000 then '5%' when 10000 then '5%'  when 20000 then '7%' when 30000 then '10%' END AS taxPercentage from customer_personal_info cpi, account_info ai where cpi.customer_id=ai.customer_id;
+
+CUSTO CUSTOMER_NAME                  ACCOUNT_NO INITIAL_DEPOSIT TAX
+----- ------------------------------ ---------- --------------- ---
+C-001 JOHN                           1.2346E+15           10000 5%
+C-002 JAMES                          1.2346E+15               0 0%
+C-003 SUNITHA                        1.2346E+15           16000
+C-004 RAMESH                         1.2346E+15               0 0%
+C-005 KUMAR                          1.2346E+15           20000 7%
